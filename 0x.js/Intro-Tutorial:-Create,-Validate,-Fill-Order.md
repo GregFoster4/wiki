@@ -121,7 +121,7 @@ const setTakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(W
 await zeroEx.awaitTransactionMinedAsync(setTakerAllowTxHash);
 ```
 
-Now the 0x protocol will be able to allow ZRX/WETH trades between our **Maker** and **Taker**. Another thing we need to do is "convert" ETH to WETH, since ETH is unfortunately not ERC20 compliant. Concretely, "converting" ETH to WETH means that we will deposit some ETH in a smart contract acting as a ERC20 wrapper. In exchange of depositing ETH, we will get some ERC20 compliant tokens called WETH at a 1:1 conversion rate. For example, depositing 10 ETH will give us back 10 WETH and we can revert the process at any time.
+Now the 0x protocol will be able to allow ZRX/WETH trades between our **Maker** and **Taker**. Another thing we need to do is "convert" ETH to WETH, since ETH is unfortunately not ERC20 compliant. Concretely, "converting" ETH to WETH means that we will deposit some ETH in a smart contract acting as an ERC20 wrapper. In exchange of depositing ETH, we will get some ERC20 compliant tokens called WETH at a 1:1 conversion rate. For example, depositing 10 ETH will give us back 10 WETH and we can revert the process at any time.
 
 ```javascript
 const ethAmount = new BigNumber(1);
@@ -155,7 +155,7 @@ const order = {
 };
 ```
 
-where the fields are:
+Where the fields are:
 
 * **maker** : Ethereum address of our **Maker**.
 * **taker** : Ethereum address of our **Taker**.
@@ -235,6 +235,6 @@ const txReceipt = await zeroEx.awaitTransactionMinedAsync(txHash);
 console.log('FillOrder transaction receipt: ', txReceipt);
 ```
 
-printing out the transaction receipt for the successful fillOrder transaction.
+Printing out the transaction receipt for the successful fillOrder transaction.
 
 Congratulation! You have now successfully created, validated and filled an order using 0x.js and the 0x protocol!
