@@ -1,12 +1,12 @@
-As previously described in the [Web3 Provider Explained](https://0xproject.com/wiki#Web3-Provider-Explained) section of the wiki, we at 0x have created a number of useful Web3 subproviders. These subproviders aren't only useful for 0x.js, they can be added to any application to provide resiliency, usability and to support hardware wallet functionality.
+As previously described in the [Web3 Provider Explained](https://0xproject.com/wiki#Web3-Provider-Explained) section of the wiki, we at 0x have created a number of useful Web3 sub providers. These sub providers aren't only useful for 0x.js, they can be added to any application to provide resiliency, usability and to support hardware wallet functionality.
 
-You can install the 0x subproviders package as follows:
+You can install the 0x sub providers package as follows:
 
 ```
 npm install @0xproject/subproviders --save
 ```
 
-The subproviders work best when they are composed together using the [Web3 Provider Engine](https://github.com/MetaMask/provider-engine). This can be installed as follows:
+The sub providers work best when they are composed together using the [Web3 Provider Engine](https://github.com/MetaMask/provider-engine). This can be installed as follows:
 
 ```
 npm install web3@0.20.4 web3-provider-engine --save
@@ -38,9 +38,9 @@ const accounts = await promisify<string>(web3.eth.getAccounts)();
 console.log(accounts);
 ```
 
-Using the configuration above, all account related requests (e.g signing and sending a transaction) go through the browser extension wallet. All other data fetching requests go through the RPC Subprovider. This example is great as an application can use their own synced Ethereum node, rather than relying on Metamask or Infura uptime.
+Using the configuration above, all account related requests (e.g signing and sending a transaction) go through the browser extension wallet. All other data fetching requests go through the RPC Sub provider. This example is great as an application can use their own synced Ethereum node, rather than relying on Metamask or Infura uptime.
 
-Within the 0x Subprovider package, we have also added a [Ledger Nano S](https://www.ledgerwallet.com/start/ledger-nano-s) subprovider. By adding this subprovider first into the Web3 Provider Engine, we are able to route all account based requests to the Ledger. We again use the RPC Provider for all other requests.
+Within the 0x Sub provider package, we have also added a [Ledger Nano S](https://www.ledgerwallet.com/start/ledger-nano-s) sub provider. By adding this sub provider first into the Web3 Provider Engine, we are able to route all account based requests to the Ledger. We again use the RPC Provider for all other requests.
 
 ```typescript
 import * as Web3 from 'web3';
@@ -73,7 +73,7 @@ const accounts = await promisify<string>(web3.eth.getAccounts)();
 console.log(accounts);
 ```
 
-This above example works for enabling the Ledger Subprovider in Browser based applications, if you want to use the Ledger directly in a Node.js application, you must use a different `ledgerEthereumClientFactoryAsync`, for example:
+This above example works for enabling the Ledger Sub provider in Browser based applications, if you want to use the Ledger directly in a Node.js application, you must use a different `ledgerEthereumClientFactoryAsync`, for example:
 
 ```typescript
 // Import the NodeJS Client Factory, rather than the Browser Client Factory
@@ -83,7 +83,7 @@ import {
 } from '@0xproject/subproviders';
 ```
 
-The Ledger Subprovider has a number of public methods and can be used directly to set various options. For example, the derivation path and the account index can be changed.
+The Ledger Sub provider has a number of public methods and can be used directly to set various options. For example, the derivation path and the account index can be changed.
 
 ```typescript
 public getPath(): string
@@ -94,7 +94,7 @@ public async signTransactionAsync(txParams: PartialTxParams): Promise<string>
 public async signPersonalMessageAsync(data: string): Promise<string>
 ```
 
-### Notes on Ledger Subprovider
+### Notes on Ledger Sub provider
 
 It is important to remember that UI components and UX need to be considered when adding the hardware wallet support to your application. A few examples that require additional thought:
 
@@ -103,7 +103,7 @@ It is important to remember that UI components and UX need to be considered when
 * The hardware device is limited to handling one request at a time
 * The hardware device is not capable of showing the message entirely on screen. An application [should confirm](https://github.com/ethfinex/0x-order-verify) what is displayed on the device
 
-In our last example we will add redundancy to the application by making use of the RedundantRPCSubprovider. The RedundantRPCSubprovider helps your application stay up when underlying Ethereum nodes experience network issues. To use this subprovider, simply provide it with a list of Ethereum node RPC endpoints and it will attempt each one in sequence until a successful response is returned.
+In our last example we will add redundancy to the application by making use of the RedundantRPCSubprovider. The RedundantRPCSubprovider helps your application stay up when underlying Ethereum nodes experience network issues. To use this sub provider, simply provide it with a list of Ethereum node RPC endpoints and it will attempt each one in sequence until a successful response is returned.
 
 ```typescript
 import * as Web3 from 'web3';
