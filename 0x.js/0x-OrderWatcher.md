@@ -45,7 +45,7 @@ The order watcher works on the pending state layer (mempool). This means, that y
 
 ### Understanding blockchain state layers
 
-Ethereum is a state-machine with different state layers, each with it's own degrees of certainty and latency. The pending state layer includes all the newest transactions in the mempool. It is very likely to change before being mined into blocks, whereas transactions with 15 block confirmations are highly unlikely to change. Waiting for 15 confirmations however has the noticeable downside that it takes ~2m45s for a transaction to reach that state.
+Ethereum is a state-machine with different state layers, each with its own degrees of certainty and latency. The pending state layer includes all the newest transactions in the mempool. It is very likely to change before being mined into blocks, whereas transactions with 15 block confirmations are highly unlikely to change. Waiting for 15 confirmations however has the noticeable downside that it takes ~2m45s for a transaction to reach that state.
 
 JSON RPC allows the caller to specify the state layer they want to access by [specifying a block number](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call), 'latest' or 'pending'.
 
@@ -53,9 +53,9 @@ The easiest thing to do would be to simply validate orders at an “immutable”
 
 On the other hand - we can't afford reacting immediately to changes in the pending state layer because the transaction making an order invalid might not end up being included in the canonical chain due to chain reorgs and we will have discarded a valid order.
 
-The solution we are proposing here is to shadow orders that are deemed invalid rather then removing them from our set of orders immediately. In the relayer orderbook pruning example, as soon as the order appears invalid within the pending state layer we recommend flagging it as such and to stop broadcasting it to UI/API clients. If the order becomes valid again later (e.g due to a chain re-org) it should be unshadowed and the order shown once again. Since we don't want our DB to grow indefinitely - it might make sense to still run an iterative cleanup worker that checks the validity of flagged orders at a much higher confirmation depth and removes them conclusively if they are deemed invalid at that point.
+The solution we are proposing here is to shadow orders that are deemed invalid rather than removing them from our set of orders immediately. In the relayer orderbook pruning example, as soon as the order appears invalid within the pending state layer we recommend flagging it as such and to stop broadcasting it to UI/API clients. If the order becomes valid again later (e.g due to a chain re-org) it should be unshadowed and the order shown once again. Since we don't want our DB to grow indefinitely - it might make sense to still run an iterative clean-up worker that checks the validity of flagged orders at a much higher confirmation depth and removes them conclusively if they are deemed invalid at that point.
 
-Lifeycle of an order:
+Lifecycle of an order:
 
 <div align="center">
     <img src="https://s3.eu-west-2.amazonaws.com/0x-wiki-images/order_states.png" style="padding-bottom: 20px; padding-top: 20px; max-width: 507px;" width="80%" />
@@ -65,7 +65,7 @@ Lifeycle of an order:
 
 The pending state changes with every new transaction that gets submitted to the mempool and if we want to keep our order book up to date - we need to revalidate all orders we are tracking every time this happens. Since this can happen every couple of milliseconds and we might be tracking millions of orders, an iterative approach will not be performant enough.
 
-Let's look into order validation more deeply and optimize it. When the order is already on an order book and it's schema and signature have already been validated - order validation is essentially a [pure function](https://en.wikipedia.org/wiki/Pure_function) that depends on blockchain state and time.
+Let's look into order validation more deeply and optimize it. When the order is already on an order book and its schema and signature have already been validated - order validation is essentially a [pure function](https://en.wikipedia.org/wiki/Pure_function) that depends on blockchain state and time.
 
 <div align="center">
     <img src="https://s3.eu-west-2.amazonaws.com/0x-wiki-images/order_state_deps.png" style="padding-bottom: 20px; padding-top: 20px; max-width: 627px;" width="80%" />
@@ -75,7 +75,7 @@ Time is the easy part. OrderWatcher simply pushes your orders onto a min heap by
 
 Blockchain state is slightly more complex. We'd like to get notified when any of those four state fields in the above diagram change for any order. Luckily those are token balance and allowance changes. According to the ERC20 standard, any token transfer/allowance change MUST emit a corresponding event ([Transfer](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md#transfer-1) & [Approval](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md#approval) respectively). We can therefore listen for those events on the pending state level and use it as a proxy for the underlying state change.
 
-Unfortunately not every balance change is a transfer. Some tokens implement additional logic like mint/burn and there is no standard about emitting events in such cases. This means the orderWatcher might miss some state changes. That's why we've implemented a cleanup job that periodically runs over all orders and checks them iteratively. This iterative process can run much more infrequently then if it were used as the primary mechanism for order watching.
+Unfortunately not every balance change is a transfer. Some tokens implement additional logic like mint/burn and there is no standard about emitting events in such cases. This means the orderWatcher might miss some state changes. That's why we've implemented a clean-up job that periodically runs over all orders and checks them iteratively. This iterative process can run much more infrequently then if it were used as the primary mechanism for order watching.
 
 <div align="center">
     <img src="https://s3.eu-west-2.amazonaws.com/0x-wiki-images/state_to_order_mapping.png" style="padding-bottom: 20px; padding-top: 20px; max-width: 761px;" width="80%" />
@@ -88,7 +88,7 @@ Because order watcher operates on the mempool state level - it has some strong i
 * You need to be running your own Ethereum node
     * Existing solutions like Infura are too unreliable and don't support fetching pending events
     * Learn [how to host your own Parity node](https://0xproject.com/wiki#How-To-Deploy-A-Parity-Node).
-* It's good to expand the default mempool size in order to accomodate as many transactions as possible.
+* It's good to expand the default mempool size in order to accommodate as many transactions as possible.
 * Those fake blocks should contain the whole mempool so that we get all the events
     * Parity has a CLI flag for that
     * Geth is working on it so for now it's Parity only :(
@@ -96,4 +96,4 @@ Because order watcher operates on the mempool state level - it has some strong i
 
 Future work
 
-Smart contract events are only a proxy for state changes, not the state change itself. What we're actually interested in is the results of balanceOf and allowance functions. [EIP 781](https://github.com/ethereum/EIPs/issues/781) proposes a way to watch arbitrary state directly in a performant way. It was created as a result of our OrderWatcher research and we're putting resources towards making it a reality. OrderWatcher v2 will remove it's reliance on events, making it more robust and eliminating the need for a cleanup job.
+Smart contract events are only a proxy for state changes, not the state change itself. What we're actually interested in is the results of balanceOf and allowance functions. [EIP 781](https://github.com/ethereum/EIPs/issues/781) proposes a way to watch arbitrary state directly in a performant way. It was created as a result of our OrderWatcher research and we're putting resources towards making it a reality. OrderWatcher v2 will remove its reliance on events, making it more robust and eliminating the need for a clean-up job.
