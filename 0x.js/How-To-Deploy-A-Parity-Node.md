@@ -75,4 +75,4 @@ By removing the `--testnet` flag, Parity will run on mainnet. The `--rpccorsdoma
 
 Parity defaults to downloading and installing upgrades as they are published. To avoid this behavior, we need to set the `--no-download` flag and `--auto-update` to `none`.
 
-You should now be able to access your Parity node via it's public DNS endpoint located under EC2's "Instances" section!
+You should now be able to access your Parity node via its public DNS endpoint located under EC2's "Instances" section!
