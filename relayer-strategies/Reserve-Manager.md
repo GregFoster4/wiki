@@ -10,4 +10,4 @@ This strategy can be used by large market makers who are willing to reliably pro
 
 ##### Limitations
 
-This strategy suffers from the same limitations as the open orderbook model, although the likelihood of a race occuring becomes smaller as order sizes grow. In addition, it requires the relayer to hold large reserves of tokens in order to make markets.
+This strategy suffers from the same limitations as the open orderbook model, although the likelihood of a race occurring becomes smaller as order sizes grow. In addition, it requires the relayer to hold large reserves of tokens in order to make markets.
