@@ -2,7 +2,7 @@ When instantiating a [new instance of the 0x.js library](https://0xproject.com/d
 
 A provider can be any module or class instance that implements the `sendAsync` method (simply `send` in web3 V1.0 Beta). That's it. What this `sendAsync` method does is take JSON RPC payload requests and handles them. [Web3.js](https://github.com/ethereum/web3.js/) is an example of a javascript module that contains a Web3 HTTP Provider.
 
-Using a configured Web3 Provider, the application can request signatures, estimate gas and gas price, and submit transactions to a Ethereum node.
+Using a configured Web3 Provider, the application can request signatures, estimate gas and gas price, and submit transactions to an Ethereum node.
 
 **Note:** 0x.js V0.12.0 and below do not support Web3 V1.0-Beta providers.
 
@@ -18,21 +18,21 @@ This provider simply takes each JSON RPC payload it receives and sends it on to 
 
 Providers can have much more complex behavior however, and [ProviderEngine](https://github.com/MetaMask/provider-engine) is a great tool for building providers that do all kinds of cool stuff.
 
-We at 0x have put together a package of subproviders that we've needed ourselves. You can install them as follows:
+We at 0x have put together a package of sub providers that we've needed ourselves. You can install them as follows:
 
 ```
 npm install @0xproject/subproviders --save
 ```
 
-We describe each of our subproviders below.
+We describe each of our sub providers below.
 
 #### RedundantRPCSubprovider
 
 In 0x Portal we use a custom built provider called [RedundantRPCSubprovider](https://github.com/0xProject/0x.js/blob/development/packages/subproviders/src/subproviders/redundant_rpc.ts) that sends an RPC payload to several Ethereum nodes sequentially until one successfully handles it. During our token sale, the huge amount of traffic caused some of our Ethereum nodes to fail. Using this subprovider we were able to have requests sent to backup nodes when this happened, greatly improving the applications resilience to outages.
 
-#### LedgerSubprovider
+#### LedgerSubProvider
 
-A great use case for custom providers is to support additional ways for your users to sign requests and send transactions. We wanted to add hardware wallet signing support to 0x Portal so we wrote a [LedgerSubprovider](https://github.com/0xProject/0x.js/blob/development/packages/subproviders/src/subproviders/ledger.ts) that would send all message and transaction signing requests to a users Ledger Nano S. All other requests would be sent to a backing Ethereum node.
+A great use case for custom providers is to support additional ways for your users to sign requests and send transactions. We wanted to add hardware wallet signing support to 0x Portal so we wrote a [LedgerSubprovider](https://github.com/0xProject/0x.js/blob/development/packages/subproviders/src/subproviders/ledger.ts) that would send all message and transaction signing requests to a user's Ledger Nano S. All other requests would be sent to a backing Ethereum node.
 
 #### InjectedWeb3Subprovider
 
