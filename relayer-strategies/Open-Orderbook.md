@@ -6,7 +6,7 @@ Alice submits orderA to sell 1 WETH in exchange for 1000 ZRX to relayer Charlie.
 
 ##### Rationale
 
-This is arguably the cheapest and most trustless strategy to implement. In addition, orders on an open orderbook are easily accessible to third parties. This comes with numerous benefits, including:
+This is arguably the cheapest and most anonymous strategy to implement. In addition, orders on an open orderbook are easily accessible to third parties. This comes with numerous benefits, including:
 
 * Orders are able to be shared across relayers.
 * External dApps can use these orders for liquidity.
