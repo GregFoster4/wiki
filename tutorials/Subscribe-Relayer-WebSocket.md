@@ -8,7 +8,7 @@ You can find all the `@0xproject/connect` documentation [here](https://0xproject
 
 ### Setup
 
-For this tutorial we will be using [TestRPC](https://github.com/ethereumjs/testrpc) as our ethereum node, a local http server, and a local WebSocket server as our relayer. The The [0x starter project](https://github.com/0xProject/0x-starter-project) has everything we need to get started.
+For this tutorial we will be using [TestRPC](https://github.com/ethereumjs/testrpc) as our ethereum node, a local http server, and a local WebSocket server as our relayer. The [0x starter project](https://github.com/0xProject/0x-starter-project) has everything we need to get started.
 
 Clone the repo:
 
